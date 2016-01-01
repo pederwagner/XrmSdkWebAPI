@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XrmSdk.WebApi", "XrmSdk.WebApi\XrmSdk.WebApi.csproj", "{BD813D0B-D98C-4F60-97A9-38C8641561BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XrmSdk.TSEntityClassGenerator", "XrmSdk.TSEntityClassGenerator\XrmSdk.TSEntityClassGenerator.csproj", "{82E95C8D-EA4E-4665-B52B-42480EB89931}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMEntityTSClassGeneratorExamples", "CRMEntityTSClassGeneratorExamples\CRMEntityTSClassGeneratorExamples.csproj", "{EB00ABB4-6C31-4533-9A62-7DAF414C809F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD813D0B-D98C-4F60-97A9-38C8641561BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD813D0B-D98C-4F60-97A9-38C8641561BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD813D0B-D98C-4F60-97A9-38C8641561BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD813D0B-D98C-4F60-97A9-38C8641561BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E95C8D-EA4E-4665-B52B-42480EB89931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E95C8D-EA4E-4665-B52B-42480EB89931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E95C8D-EA4E-4665-B52B-42480EB89931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E95C8D-EA4E-4665-B52B-42480EB89931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB00ABB4-6C31-4533-9A62-7DAF414C809F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB00ABB4-6C31-4533-9A62-7DAF414C809F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB00ABB4-6C31-4533-9A62-7DAF414C809F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB00ABB4-6C31-4533-9A62-7DAF414C809F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://proactive.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = XrmSdk.WebApi\\XrmSdk.WebApi.csproj
+		SccProjectName1 = XrmSdk.WebApi
+		SccLocalPath1 = XrmSdk.WebApi
+		SccProjectUniqueName2 = XrmSdk.TSEntityClassGenerator\\XrmSdk.TSEntityClassGenerator.csproj
+		SccProjectName2 = XrmSdk.TSEntityClassGenerator
+		SccLocalPath2 = XrmSdk.TSEntityClassGenerator
+		SccProjectUniqueName3 = CRMEntityTSClassGeneratorExamples\\CRMEntityTSClassGeneratorExamples.csproj
+		SccProjectName3 = CRMEntityTSClassGeneratorExamples
+		SccLocalPath3 = CRMEntityTSClassGeneratorExamples
+	EndGlobalSection
+EndGlobal

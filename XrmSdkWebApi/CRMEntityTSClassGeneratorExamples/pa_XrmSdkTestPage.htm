@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>XrmSdk test page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
+    <script src="ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="new_XrmSdk.WebAPI.js" type="text/javascript"></script>
+    <script src="new_XrmSdk.Contact.js" type="text/javascript"></script>
+    <script src="new_XrmSdkTestApp.js" type="text/javascript"></script>
+    
+
+</head>
+<body ng-app="xrmSdkTestModule" ng-controller="defaultCtrl">
+    <div class="container-fluid">
+        <h1>XrmSdk test page</h1>
+        <hr />
+        <h2>Search for contact</h2>
+        <div class="row">
+            <label for="firstname" class="col-md-2">Firstname</label>
+            <div class="col-md-4 input-group">
+                <span class="input-group-addon">TEST_</span>
+                <input name="firstname" type="text" maxlength="40" class="form-control input-sm" placeholder="Firstname" id="firstname" ng-model="vm.searchFirstName" />
+            </div>
+            <label for="lastname" class="col-md-2">Lastname</label>
+            <div class="col-md-4 input-group">
+                <span class="input-group-addon">TEST_</span>
+                <input name="lastname" type="text" maxlength="40" class="form-control input-sm" placeholder="Lastname" id="lastname" ng-model="vm.searchLastName" />
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-default btn-lg" title="find" ng-click="vm.search()">Find Contact</button>
+        </div>
+
+        <hr />
+        <h2>Contact data</h2>
+        <div class="row">
+            <label for="recordId" class="col-md-2">Id</label>
+            <span id="recordId">{{vm.id}}</span>
+        </div>
+        <div class="row">
+            <label for="firstname2" class="col-md-2">Firstname</label>
+            <div class="col-md-4 input-group">
+                <span class="input-group-addon">TEST_</span>
+                <input name="firstname2" type="text" maxlength="40" class="form-control input-sm" placeholder="Firstname" id="firstname2" ng-model="vm.firstname"/>
+            </div>
+            <label for="lastname2" class="col-md-2">Lastname</label>
+            <div class="col-md-4 input-group">
+                <span class="input-group-addon">TEST_</span>
+                <input name="lastname2" type="text" maxlength="40" class="form-control input-sm" placeholder="Lastname" id="lastname2" ng-model="vm.lastname"/>
+            </div>
+        </div>
+        <div class="row">
+            <label for="maritalstatus" class="col-md-2">Marital status</label>
+            <div class="col-md-4">
+                <select name="maritalstatus" class="form-control input-sm" id="maritalstatus" ng-model="vm.maritalstatus" ng-options="statusValue.name for statusValue in vm.maritalsStatusOptions | orderBy:'name'"></select>
+            </div>
+            {{vm.maritalstatus}}
+        </div>
+        <div>
+            <button class="btn btn-default btn-lg" title="create" ng-click="vm.create()">Create</button>
+            <button class="btn btn-default btn-lg" title="update" ng-click="vm.update()">Update</button>
+        </div>
+
+
+    </div>
+</body>
+</html>

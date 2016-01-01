@@ -319,7 +319,7 @@ module XrmSdk.WebAPI {
                 };
                 req.send(JSON.stringify(updatedEntity));
             });
-           
+
         } else {
             var deferred = new Promise<void>((resolve, reject) => {
                 req.send(JSON.stringify(updatedEntity));
@@ -334,12 +334,10 @@ module XrmSdk.WebAPI {
         }
     }
 
-    export function updatePropertyValue(uri: string, propertyName: string, value: any, successCallback: () => void, errorCallback: (error: Error) => void, callerId, async: boolean) {
+    export function updatePropertyValue(uri: string, propertyName: string, value: any, callerId, async: boolean): Promise<void> {
         /// <summary>Update an entity property</summary>
         /// <param name="uri" type="String">The Uri for the entity with the property you want to update</param>
         /// <param name="updatedEntity" type="Object">An object that contains updated properties for the entity.</param>
-        /// <param name="successCallback" type="Function">The function to call when the entity property value is updated. The property value will be passed to this function.</param>
-        /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
         /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
         /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
         if (!this.isString(uri)) {
@@ -350,12 +348,6 @@ module XrmSdk.WebAPI {
         }
         if (this.isNullOrUndefined(value)) {
             throw new Error("XrmSdk.WebAPI.updateProperty value parameter must not be null or undefined.");
-        }
-        if (!this.isFunctionOrNull(successCallback)) {
-            throw new Error("XrmSdk.WebAPI.updateProperty successCallback parameter must be a function or null.");
-        }
-        if (!this.isFunctionOrNull(errorCallback)) {
-            throw new Error("XrmSdk.WebAPI.updateProperty errorCallback parameter must be a function or null.");
         }
         if (!this.isAcceptableCallerId(callerId)) {
             throw new Error("XrmSdk.WebAPI.updateProperty callerId parameter must be a string or null.");
@@ -376,40 +368,38 @@ module XrmSdk.WebAPI {
         var updateObject: any = {};
         updateObject.value = value;
         if (async) {
-            req.onreadystatechange = function () {
-                if (this.readyState == 4 /* complete */) {
-                    req.onreadystatechange = null;
-                    if (this.status == 204) {
-                        if (successCallback)
-                            successCallback();
-                    } else {
-                        if (errorCallback)
-                            errorCallback(this.errorHandler(this));
+            return new Promise<void>((resolve, reject) => {
+                req.onreadystatechange = function () {
+                    if (this.readyState == 4 /* complete */) {
+                        req.onreadystatechange = null;
+                        if (this.status == 204) {
+                            resolve();
+                        } else {
+                            reject(this.errorHandler(this));
+                        }
                     }
-                }
-            };
-            req.send(JSON.stringify(updateObject));
+                };
+                req.send(JSON.stringify(updateObject));
+            });
         } else {
-            req.send(JSON.stringify(updateObject));
-            if (req.status == 204) {
-                if (successCallback)
-                    successCallback();
-            } else {
-                if (errorCallback)
-                    errorCallback(this.errorHandler(this));
-            }
+            var deferred = new Promise<void>((resolve, reject) => {
+                req.send(JSON.stringify(updateObject));
+                if (req.status == 204) {
+                    resolve();
+                } else {
+                    reject(this.errorHandler(this));
+                }
+            });
+            return deferred;
         }
-
     }
 
-    export function upsert(uri: string, entity: Entity, preventCreate: boolean, preventUpdate: boolean, successCallback: (id?: string) => void, errorCallback: (error: Error) => void, callerId: string, async: boolean) {
+    export function upsert(uri: string, entity: Entity, preventCreate: boolean, preventUpdate: boolean, callerId: string, async: boolean): Promise<string> {
         /// <summary>Upsert an entity</summary>
         /// <param name="uri" type="String">The Uri for the entity you want to create or update</param>
         /// <param name="entity" type="Object">An object that contains updated properties for the entity.</param>
         /// <param name="preventCreate" type="Boolean">Whether you want to prevent creating a new entity.</param>
         /// <param name="preventUpdate" type="Boolean">Whether you want to prevent updating an existing entity.</param>
-        /// <param name="successCallback" type="Function">The function to call when the operation is performed</param>
-        /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
         /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
         /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
         if (!this.isString(uri)) {
@@ -423,12 +413,6 @@ module XrmSdk.WebAPI {
         }
         if (!this.isBooleanOrNull(preventUpdate)) {
             throw new Error("XrmSdk.WebAPI.upsert preventUpdate parameter must be boolean or null.");
-        }
-        if (!this.isFunctionOrNull(successCallback)) {
-            throw new Error("XrmSdk.WebAPI.upsert successCallback parameter must be a function or null.");
-        }
-        if (!this.isFunctionOrNull(errorCallback)) {
-            throw new Error("XrmSdk.WebAPI.upsert errorCallback parameter must be a function or null.");
         }
         if (!this.isAcceptableCallerId(callerId)) {
             throw new Error("XrmSdk.WebAPI.upsert callerId parameter must be a string or null.");
@@ -455,75 +439,71 @@ module XrmSdk.WebAPI {
             req.setRequestHeader("OData-Version", "4.0");
 
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        switch (this.status) {
-                            case 204:
-                                if (successCallback)
-                                    successCallback(this.getResponseHeader("OData-EntityId"));
-                                break;
-                            case 412:
-                                if (preventUpdate) {
-                                    if (successCallback)
-                                        successCallback(); //Update prevented
-                                } else {
-                                    if (errorCallback)
-                                        errorCallback(this.errorHandler(this));
-                                }
-                                break;
-                            case 404:
-                                if (preventCreate) {
-                                    if (successCallback)
-                                        successCallback(); //Create prevented
-                                } else {
-                                    if (errorCallback)
-                                        errorCallback(this.errorHandler(this));
-                                }
-                                break;
-                            default:
-                                if (errorCallback)
-                                    errorCallback(this.errorHandler(this));
-                                break;
+                return new Promise<string>((resolve, reject) => {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            switch (this.status) {
+                                case 204:
+                                    resolve(this.getResponseHeader("OData-EntityId"));
+                                    break;
+                                case 412:
+                                    if (preventUpdate) {
+                                        resolve(); //Update prevented
+                                    } else {
+                                        reject(this.errorHandler(this));
+                                    }
+                                    break;
+                                case 404:
+                                    if (preventCreate) {
+                                        resolve(); //Create prevented
+                                    } else {
+                                        reject(this.errorHandler(this));
+                                    }
+                                    break;
+                                default:
+                                    reject(this.errorHandler(this));
+                                    break;
 
+                            }
                         }
-                    }
-                };
-                req.send(JSON.stringify(entity));
+                    };
+                    req.send(JSON.stringify(entity));
+                });
             } else {
-                req.send(JSON.stringify(entity));
-                switch (req.status) {
+                var deferred = new Promise<string>((resolve, reject) => {
+                    req.send(JSON.stringify(entity));
+                    switch (req.status) {
                     case 204:
-                        if (successCallback)
-                            successCallback(req.getResponseHeader("OData-EntityId"));
+                        resolve(req.getResponseHeader("OData-EntityId"));
                         break;
                     case 412:
                         if (preventUpdate) {
-                            if (successCallback)
-                                successCallback(); //Update prevented
+                            resolve(); //Update prevented
                         } else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
+                            reject(this.errorHandler(this));
                         }
                         break;
                     case 404:
                         if (preventCreate) {
-                            if (successCallback)
-                                successCallback(); //Create prevented
+                            resolve(); //Create prevented
                         } else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
+                            reject(this.errorHandler(this));
                         }
                         break;
                     default:
-                        if (errorCallback)
-                            errorCallback(this.errorHandler(this));
+                        reject(this.errorHandler(this));
                         break;
 
-                }
+                    }
+                });
+                return deferred;
             }
         } else {
             console.log("XrmSdk.WebAPI.upsert performed no action because both preventCreate and preventUpdate parameters were true.");
+            return new Promise<string>((resolve, reject) => {
+                reject(this.errorHandler(new Error("XrmSdk.WebAPI.upsert performed no action because both preventCreate and preventUpdate parameters were true.")));
+            });
         }
     }
 

@@ -60,8 +60,8 @@ module XrmServiceToolkitTestApp {
                 + "startswith(" + attributeNames.FirstName + ", 'TEST_" + this.searchFirstName + "')"
                 + " and startswith(" + attributeNames.LastName + ", 'TEST_" + this.searchLastName + "')";
 
-            XrmSdk.WebAPI.queryEntitySet(XrmSdk.Contact.EntityDataSetName, options, false, 1,
-                (data) => {
+            XrmSdk.WebAPI.queryEntitySet(XrmSdk.Contact.EntityDataSetName, options, false, 1, null, true)
+                .then((data) => {
                     if (data.value.length > 0) {
                         var firstResult = XrmSdk.Contact.castFromEntity(data.value[0]);
                         this.id = firstResult.contactid;
@@ -77,11 +77,10 @@ module XrmServiceToolkitTestApp {
                         }
                         self.$scope.$apply();
                     }
-                }, (error) => {
+                })
+                .catch((error: Error) => {
                     var temp = error;
-                },
-                null,
-                true);
+                });
         }
 
         create() {

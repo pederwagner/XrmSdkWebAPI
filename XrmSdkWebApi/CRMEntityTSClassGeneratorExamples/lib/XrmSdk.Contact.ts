@@ -7,7 +7,7 @@
 //  Project: https://github.com/pederwagner/XrmSdkWebAPI
 // =========================================================================================
 
-/// <reference path="XrmSdk.Interfaces.d.ts" />
+/// <reference path="../../XrmSdk.WebApi/XrmSdk.Interfaces.d.ts" />
 "use strict";
 module XrmSdk.ContactAttributeNames {
 

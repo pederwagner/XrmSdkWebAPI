@@ -23,6 +23,7 @@
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="lib\XrmSdk.WebAPI.js" />
     <Content Include="pa_XrmSdkTestPage.htm" />
     <Content Include="web.config" />
   </ItemGroup>
@@ -36,7 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="lib\angular\angular.d.ts" />
-    <TypeScriptCompile Include="lib\es6-promise.d.ts" />
     <TypeScriptCompile Include="lib\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="lib\XrmSdk.Contact.ts" />
     <TypeScriptCompile Include="lib\Xrm.d.ts" />

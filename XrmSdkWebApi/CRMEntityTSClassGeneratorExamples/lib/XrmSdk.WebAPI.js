@@ -1,7 +1,11 @@
 // ===================================================================================
-//  This file is ported and extended from the Microsoft Dynamics CRM SDK code samples.
+//  XrmSdk.WebAPI
+//  A TypeScript Service Wrapper for the Microsoft Dynamics CRM 2016 WebAPI
 //
-//  Copyright (C) Peder Møller Wagner, ProActive.  All rights reserved.
+//  Author: Peder Møller Wagner, ProActive (http://en.proactive.dk)
+//  ProActive is a Microsoft Gold Partner, and one of the leading MS CRM partners in Denmark
+//
+//  Project: https://github.com/pederwagner/XrmSdkWebAPI
 //
 //  Typescript Target Version: 1.4
 // ===================================================================================
@@ -261,25 +265,22 @@ var XrmSdk;
             }
         }
         WebAPI.retrievePropertyValue = retrievePropertyValue;
-        function update(uri, updatedEntity, successCallback, errorCallback, callerId, async) {
+        function update(entityDatasetName, id, updatedEntity, callerId, async) {
+            var _this = this;
             /// <summary>Update an entity</summary>
-            /// <param name="uri" type="String">The Uri for the entity you want to update</param>
+            /// <param name="entityDatasetName" type="String">The name of the dataset for the entity you want to update</param>
+            /// <param name="id" type="String">The unique identifier (Guid) for the entity you want to update</param>
             /// <param name="updatedEntity" type="Object">An object that contains updated properties for the entity.</param>
-            /// <param name="successCallback" type="Function">The function to call when the entity is updated.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
-            if (!XrmSdk.WebAPI.isString(uri)) {
-                throw new Error("XrmSdk.WebAPI.update uri parameter must be a string.");
+            if (!XrmSdk.WebAPI.isString(entityDatasetName)) {
+                throw new Error("XrmSdk.WebAPI.update entityDatasetName parameter must be a string.");
+            }
+            if (!XrmSdk.WebAPI.isString(id)) {
+                throw new Error("XrmSdk.WebAPI.update id parameter must be a string.");
             }
             if (XrmSdk.WebAPI.isNullOrUndefined(updatedEntity)) {
                 throw new Error("XrmSdk.WebAPI.update updatedEntity parameter must not be null or undefined.");
-            }
-            if (!XrmSdk.WebAPI.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.update successCallback parameter must be a function or null.");
-            }
-            if (!XrmSdk.WebAPI.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.update errorCallback parameter must be a function or null.");
             }
             if (!XrmSdk.WebAPI.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.update callerId parameter must be a string or null.");
@@ -288,6 +289,7 @@ var XrmSdk;
                 throw new Error("XrmSdk.WebAPI.update async parameter must be a boolean.");
             }
             var req = new XMLHttpRequest();
+            var uri = this.getWebAPIPath() + entityDatasetName + "(" + id + ")";
             req.open("PATCH", encodeURI(uri), async);
             req.setRequestHeader("Accept", "application/json");
             if (callerId) {
@@ -297,38 +299,40 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send(JSON.stringify(updatedEntity));
+                    };
+                    req.send(JSON.stringify(updatedEntity));
+                });
             }
             else {
-                req.send(JSON.stringify(updatedEntity));
-                if (req.status === 200) {
-                    successCallback();
-                }
-                else {
-                    errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send(JSON.stringify(updatedEntity));
+                    if (req.status === 200) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.update = update;
-        function updatePropertyValue(uri, propertyName, value, successCallback, errorCallback, callerId, async) {
+        function updatePropertyValue(uri, propertyName, value, callerId, async) {
+            var _this = this;
             /// <summary>Update an entity property</summary>
             /// <param name="uri" type="String">The Uri for the entity with the property you want to update</param>
             /// <param name="updatedEntity" type="Object">An object that contains updated properties for the entity.</param>
-            /// <param name="successCallback" type="Function">The function to call when the entity property value is updated. The property value will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(uri)) {
@@ -339,12 +343,6 @@ var XrmSdk;
             }
             if (this.isNullOrUndefined(value)) {
                 throw new Error("XrmSdk.WebAPI.updateProperty value parameter must not be null or undefined.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.updateProperty successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.updateProperty errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.updateProperty callerId parameter must be a string or null.");
@@ -364,42 +362,42 @@ var XrmSdk;
             var updateObject = {};
             updateObject.value = value;
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send(JSON.stringify(updateObject));
+                    };
+                    req.send(JSON.stringify(updateObject));
+                });
             }
             else {
-                req.send(JSON.stringify(updateObject));
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send(JSON.stringify(updateObject));
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.updatePropertyValue = updatePropertyValue;
-        function upsert(uri, entity, preventCreate, preventUpdate, successCallback, errorCallback, callerId, async) {
+        function upsert(uri, entity, preventCreate, preventUpdate, callerId, async) {
+            var _this = this;
             /// <summary>Upsert an entity</summary>
             /// <param name="uri" type="String">The Uri for the entity you want to create or update</param>
             /// <param name="entity" type="Object">An object that contains updated properties for the entity.</param>
             /// <param name="preventCreate" type="Boolean">Whether you want to prevent creating a new entity.</param>
             /// <param name="preventUpdate" type="Boolean">Whether you want to prevent updating an existing entity.</param>
-            /// <param name="successCallback" type="Function">The function to call when the operation is performed</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(uri)) {
@@ -413,12 +411,6 @@ var XrmSdk;
             }
             if (!this.isBooleanOrNull(preventUpdate)) {
                 throw new Error("XrmSdk.WebAPI.upsert preventUpdate parameter must be boolean or null.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.upsert successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.upsert errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.upsert callerId parameter must be a string or null.");
@@ -443,98 +435,87 @@ var XrmSdk;
                 req.setRequestHeader("OData-MaxVersion", "4.0");
                 req.setRequestHeader("OData-Version", "4.0");
                 if (async) {
-                    req.onreadystatechange = function () {
-                        if (this.readyState == 4 /* complete */) {
-                            req.onreadystatechange = null;
-                            switch (this.status) {
-                                case 204:
-                                    if (successCallback)
-                                        successCallback(this.getResponseHeader("OData-EntityId"));
-                                    break;
-                                case 412:
-                                    if (preventUpdate) {
-                                        if (successCallback)
-                                            successCallback(); //Update prevented
-                                    }
-                                    else {
-                                        if (errorCallback)
-                                            errorCallback(this.errorHandler(this));
-                                    }
-                                    break;
-                                case 404:
-                                    if (preventCreate) {
-                                        if (successCallback)
-                                            successCallback(); //Create prevented
-                                    }
-                                    else {
-                                        if (errorCallback)
-                                            errorCallback(this.errorHandler(this));
-                                    }
-                                    break;
-                                default:
-                                    if (errorCallback)
-                                        errorCallback(this.errorHandler(this));
-                                    break;
+                    return new Promise(function (resolve, reject) {
+                        req.onreadystatechange = function () {
+                            if (this.readyState == 4 /* complete */) {
+                                req.onreadystatechange = null;
+                                switch (this.status) {
+                                    case 204:
+                                        resolve(this.getResponseHeader("OData-EntityId"));
+                                        break;
+                                    case 412:
+                                        if (preventUpdate) {
+                                            resolve(); //Update prevented
+                                        }
+                                        else {
+                                            reject(this.errorHandler(this));
+                                        }
+                                        break;
+                                    case 404:
+                                        if (preventCreate) {
+                                            resolve(); //Create prevented
+                                        }
+                                        else {
+                                            reject(this.errorHandler(this));
+                                        }
+                                        break;
+                                    default:
+                                        reject(this.errorHandler(this));
+                                        break;
+                                }
                             }
-                        }
-                    };
-                    req.send(JSON.stringify(entity));
+                        };
+                        req.send(JSON.stringify(entity));
+                    });
                 }
                 else {
-                    req.send(JSON.stringify(entity));
-                    switch (req.status) {
-                        case 204:
-                            if (successCallback)
-                                successCallback(req.getResponseHeader("OData-EntityId"));
-                            break;
-                        case 412:
-                            if (preventUpdate) {
-                                if (successCallback)
-                                    successCallback(); //Update prevented
-                            }
-                            else {
-                                if (errorCallback)
-                                    errorCallback(this.errorHandler(this));
-                            }
-                            break;
-                        case 404:
-                            if (preventCreate) {
-                                if (successCallback)
-                                    successCallback(); //Create prevented
-                            }
-                            else {
-                                if (errorCallback)
-                                    errorCallback(this.errorHandler(this));
-                            }
-                            break;
-                        default:
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                            break;
-                    }
+                    var deferred = new Promise(function (resolve, reject) {
+                        req.send(JSON.stringify(entity));
+                        switch (req.status) {
+                            case 204:
+                                resolve(req.getResponseHeader("OData-EntityId"));
+                                break;
+                            case 412:
+                                if (preventUpdate) {
+                                    resolve(); //Update prevented
+                                }
+                                else {
+                                    reject(_this.errorHandler(_this));
+                                }
+                                break;
+                            case 404:
+                                if (preventCreate) {
+                                    resolve(); //Create prevented
+                                }
+                                else {
+                                    reject(_this.errorHandler(_this));
+                                }
+                                break;
+                            default:
+                                reject(_this.errorHandler(_this));
+                                break;
+                        }
+                    });
+                    return deferred;
                 }
             }
             else {
                 console.log("XrmSdk.WebAPI.upsert performed no action because both preventCreate and preventUpdate parameters were true.");
+                return new Promise(function (resolve, reject) {
+                    reject(_this.errorHandler(new Error("XrmSdk.WebAPI.upsert performed no action because both preventCreate and preventUpdate parameters were true.")));
+                });
             }
         }
         WebAPI.upsert = upsert;
         //delete is a JavaScript keyword and should not be used as a method name
-        function del(uri, successCallback, errorCallback, callerId, async) {
+        function del(uri, callerId, async) {
+            var _this = this;
             /// <summary>Delete an entity</summary>
             /// <param name="uri" type="String">The Uri for the entity you want to delete</param>        
-            /// <param name="successCallback" type="Function">The function to call when the entity is deleted.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(uri)) {
                 throw new Error("XrmSdk.WebAPI.del uri parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.del successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.del errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.del callerId parameter must be a string or null.");
@@ -552,40 +533,40 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.del = del;
-        function deletePropertyValue(uri, propertyName, successCallback, errorCallback, callerId, async) {
+        function deletePropertyValue(uri, propertyName, callerId, async) {
+            var _this = this;
             /// <summary>Delete an entity property value</summary>
             /// <param name="uri" type="String">The Uri for the entity you want to update</param>
             /// <param name="propertyName" type="String">The name of the property value you want to delete</param>        
-            /// <param name="successCallback" type="Function">The function to call when the entity property is deleted.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(uri)) {
@@ -593,12 +574,6 @@ var XrmSdk;
             }
             if (!this.isString(propertyName)) {
                 throw new Error("XrmSdk.WebAPI.deletePropertyValue propertyName parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.deletePropertyValue successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.deletePropertyValue errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.deletePropertyValue callerId parameter must be a string or null.");
@@ -615,41 +590,41 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.deletePropertyValue = deletePropertyValue;
-        function associate(parentUri, navigationPropertyName, childUri, successCallback, errorCallback, callerId, async) {
+        function associate(parentUri, navigationPropertyName, childUri, callerId, async) {
+            var _this = this;
             /// <summary>Associate an entity</summary>
             /// <param name="parentUri" type="String">The Uri for the entity you want to associate another entity to.</param>
             /// <param name="navigationPropertyName" type="String">The name of the navigation property you want to use to associate the entities.</param>
             /// <param name="childUri" type="String">The Uri for the entity you want to associate with the parent entity.</param>        
-            /// <param name="successCallback" type="Function">The function to call when the entities are associated.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(parentUri)) {
@@ -660,12 +635,6 @@ var XrmSdk;
             }
             if (!this.isString(childUri)) {
                 throw new Error("XrmSdk.WebAPI.associate childUri parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.associate successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.associate errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.associate callerId parameter must be a string or null.");
@@ -685,41 +654,41 @@ var XrmSdk;
             var rel = {};
             rel["@odata.id"] = childUri;
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send(JSON.stringify(rel));
+                    };
+                    req.send(JSON.stringify(rel));
+                });
             }
             else {
-                req.send(JSON.stringify(rel));
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send(JSON.stringify(rel));
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.associate = associate;
-        function disassociate(parentUri, navigationPropertyName, childUri, successCallback, errorCallback, callerId, async) {
+        function disassociate(parentUri, navigationPropertyName, childUri, callerId, async) {
+            var _this = this;
             /// <summary>Disassociate an entity</summary>
             /// <param name="parentUri" type="String">The Uri for the parent entity.</param>
             /// <param name="navigationPropertyName" type="String">The name of the collection navigation property you want to use to disassociate the entities.</param>
             /// <param name="childUri" type="String">The Uri for the entity you want to disassociate with the parent entity.</param>
-            /// <param name="successCallback" type="Function">The function to call when the entities are disassociated.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(parentUri)) {
@@ -730,12 +699,6 @@ var XrmSdk;
             }
             if (!this.isString(childUri)) {
                 throw new Error("XrmSdk.WebAPI.disassociate childUri parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.disassociate successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.disassociate errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.disassociate callerId parameter must be a string or null.");
@@ -753,40 +716,40 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.disassociate = disassociate;
-        function removeReference(entityUri, navigationPropertyName, successCallback, errorCallback, callerId, async) {
+        function removeReference(entityUri, navigationPropertyName, callerId, async) {
+            var _this = this;
             /// <summary>Remove the value of a single-valued navigation property</summary>
             /// <param name="entityUri" type="String">The Uri for the entity.</param>
             /// <param name="navigationPropertyName" type="String">The name of the navigation property you want to use to disassociate the entities.</param>            
-            /// <param name="successCallback" type="Function">The function to call when the entities are disassociated.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(entityUri)) {
@@ -794,12 +757,6 @@ var XrmSdk;
             }
             if (!this.isString(navigationPropertyName)) {
                 throw new Error("XrmSdk.WebAPI.removeReference navigationPropertyName parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.removeReference successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.removeReference errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.removeReference callerId parameter must be a string or null.");
@@ -817,41 +774,41 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.removeReference = removeReference;
-        function addReference(entityUri, navigationPropertyName, referencedEntityUri, successCallback, errorCallback, callerId, async) {
+        function addReference(entityUri, navigationPropertyName, referencedEntityUri, callerId, async) {
+            var _this = this;
             /// <summary>Set the value of a single-valued navigation property</summary>
             /// <param name="entityUri" type="String">The Uri for the entity.</param>
             /// <param name="navigationPropertyName" type="String">The name of the navigation property you want to use to associate the entities.</param>     
             /// <param name="referencedEntityUri" type="String">The Uri for the entity you want to associate with the child entity.</param>
-            /// <param name="successCallback" type="Function">The function to call when the entities are disassociated.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(entityUri)) {
@@ -862,12 +819,6 @@ var XrmSdk;
             }
             if (!this.isString(referencedEntityUri)) {
                 throw new Error("XrmSdk.WebAPI.addReference referencedEntityUri parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.addReference successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.addReference errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.addReference callerId parameter must be a string or null.");
@@ -887,40 +838,40 @@ var XrmSdk;
             var rel = {};
             rel["@odata.id"] = referencedEntityUri;
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 204) {
-                            if (successCallback)
-                                successCallback();
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 204) {
+                                resolve();
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send(JSON.stringify(rel));
+                    };
+                    req.send(JSON.stringify(rel));
+                });
             }
             else {
-                req.send(JSON.stringify(rel));
-                if (req.status == 204) {
-                    if (successCallback)
-                        successCallback();
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send(JSON.stringify(rel));
+                    if (req.status == 204) {
+                        resolve();
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.addReference = addReference;
-        function invokeBoundFunction(entitySetName, functionName, successCallback, errorCallback, callerId, async) {
+        function invokeBoundFunction(entitySetName, functionName, callerId, async) {
+            var _this = this;
             /// <summary>Invoke a bound function</summary>
             /// <param name="entitySetName" type="String">The logical collection name for the entity that the function is bound to.</param>
             /// <param name="functionName" type="String">The name of the bound function you want to invoke</param>        
-            /// <param name="successCallback" type="Function">The function to call when the function is invoked. The results of the bound function will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (this.isNullOrUndefined(entitySetName)) {
@@ -928,12 +879,6 @@ var XrmSdk;
             }
             if (this.isNullOrUndefined(functionName)) {
                 throw new Error("XrmSdk.WebAPI.invokeBoundFunction functionName parameter must not be null or undefined.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeBoundFunction successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeBoundFunction errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.invokeBoundFunction callerId parameter must be a string or null.");
@@ -952,40 +897,40 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback)
-                                successCallback(JSON.parse(this.response, this.dateReviver).value);
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(JSON.parse(this.response, this.dateReviver).value);
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 200) {
-                    if (successCallback)
-                        successCallback(JSON.parse(req.response, this.dateReviver).value);
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.response, _this.dateReviver).value);
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.invokeBoundFunction = invokeBoundFunction;
-        function invokeUnboundFunction(functionName, parameters, successCallback, errorCallback, callerId, async) {
+        function invokeUnboundFunction(functionName, parameters, callerId, async) {
+            var _this = this;
             /// <summary>Invoke an unbound function</summary>
             /// <param name="functionName" type="String">The name of the unbound function you want to invoke</param>
             /// <param name="parameters" type="Array">An array of strings representing the parameters to pass to the unbound function</param>
-            /// <param name="successCallback" type="Function">The function to call when the function is invoked. The results of the unbound function will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (this.isNullOrUndefined(functionName)) {
@@ -993,12 +938,6 @@ var XrmSdk;
             }
             if (!this.isStringArrayOrNull(parameters)) {
                 throw new Error("XrmSdk.WebAPI.retrieve parameters parameter must be an array of strings or null.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeUnboundFunction successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeUnboundFunction errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.invokeUnboundFunction callerId parameter must be a string or null.");
@@ -1034,40 +973,40 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback)
-                                successCallback(JSON.parse(this.response, this.dateReviver));
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(JSON.parse(this.response, this.dateReviver));
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 200) {
-                    if (successCallback)
-                        successCallback(JSON.parse(req.response, this.dateReviver));
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.response, _this.dateReviver));
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.invokeUnboundFunction = invokeUnboundFunction;
-        function invokeUnboundAction(actionName, parameterObj, successCallback, errorCallback, callerId, async) {
+        function invokeUnboundAction(actionName, parameterObj, callerId, async) {
+            var _this = this;
             /// <summary>Invoke an unbound action</summary>
             /// <param name="actionName" type="String">The name of the unbound action you want to invoke.</param>
             /// <param name="parameterObj" type="Object">An object that defines parameters expected by the action</param>        
-            /// <param name="successCallback" type="Function">The function to call when the action is invoked. The results of the action will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(actionName)) {
@@ -1075,12 +1014,6 @@ var XrmSdk;
             }
             if (this.isUndefined(parameterObj)) {
                 throw new Error("XrmSdk.WebAPI.invokeUnboundAction parameterObj parameter must not be undefined.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeUnboundAction successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.invokeUnboundAction errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.invokeUnboundAction callerId parameter must be a string or null.");
@@ -1098,71 +1031,73 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200 || this.status == 201 || this.status == 204) {
-                            if (successCallback)
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200 || this.status == 201 || this.status == 204) {
                                 switch (this.status) {
                                     case 200:
                                         //When the Action returns a value
-                                        successCallback(JSON.parse(this.response, this.dateReviver));
+                                        resolve(JSON.parse(this.response, this.dateReviver));
                                         break;
                                     case 201:
                                     case 204:
                                         //When the Action does not return a value
-                                        successCallback();
+                                        resolve();
                                         break;
                                     default:
                                         //Should not happen
                                         break;
                                 }
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
+                    };
+                    if (parameterObj) {
+                        req.send(JSON.stringify(parameterObj));
                     }
-                };
-                if (parameterObj) {
-                    req.send(JSON.stringify(parameterObj));
-                }
-                else {
-                    req.send();
-                }
+                    else {
+                        req.send();
+                    }
+                });
             }
             else {
-                if (parameterObj) {
-                    req.send(JSON.stringify(parameterObj));
-                }
-                else {
-                    req.send();
-                }
-                switch (req.status) {
-                    case 200:
-                        //When the Action returns a value
-                        successCallback(JSON.parse(req.response, this.dateReviver));
-                        break;
-                    case 201:
-                    case 204:
-                        //When the Action does not return a value
-                        successCallback();
-                        break;
-                    default:
-                        //Should not happen
-                        break;
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    if (parameterObj) {
+                        req.send(JSON.stringify(parameterObj));
+                    }
+                    else {
+                        req.send();
+                    }
+                    switch (req.status) {
+                        case 200:
+                            //When the Action returns a value
+                            resolve(JSON.parse(req.response, _this.dateReviver));
+                            break;
+                        case 201:
+                        case 204:
+                            //When the Action does not return a value
+                            resolve();
+                            break;
+                        default:
+                            //Should not happen
+                            break;
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.invokeUnboundAction = invokeUnboundAction;
-        function queryEntitySet(entitySetName, query, includeFormattedValues, maxPageSize, successCallback, errorCallback, callerId, async) {
-            /// <summary>Retrieve multiple entities</summary>
+        function queryEntitySet(entitySetName, query, includeFormattedValues, maxPageSize, callerId, async) {
+            var _this = this;
+            /// <summary>Retrieve multiple entities</summary
             /// <param name="entitySetName" type="String">The logical collection name for the type of entity you want to retrieve.</param>
             /// <param name="query" type="String">The system query parameters you want to apply.</param> 
             /// <param name="includeFormattedValues" type="Boolean">Whether you want to have formatted values included in the results</param> 
             /// <param name="maxPageSize" type="Number">A number that limits the number of entities to be retrieved in the query.</param> 
-            /// <param name="successCallback" type="Function">The function to call when the entities are returned. The results of the query will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(entitySetName)) {
@@ -1176,12 +1111,6 @@ var XrmSdk;
             }
             if (!this.isNumberOrNull(maxPageSize)) {
                 throw new Error("XrmSdk.WebAPI.queryEntitySet maxPageSize parameter must be a number or null.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.queryEntitySet successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.queryEntitySet errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.queryEntitySet callerId parameter must be a string or null.");
@@ -1213,41 +1142,41 @@ var XrmSdk;
                 }
             }
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback)
-                                successCallback(JSON.parse(this.response, this.dateReviver));
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(JSON.parse(this.response, this.dateReviver));
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 200) {
-                    if (successCallback)
-                        successCallback(JSON.parse(req.response, this.dateReviver));
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.response, _this.dateReviver));
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.queryEntitySet = queryEntitySet;
-        function getNextPage(query, includeFormattedValues, maxPageSize, successCallback, errorCallback, callerId, async) {
+        function getNextPage(query, includeFormattedValues, maxPageSize, callerId, async) {
+            var _this = this;
             /// <summary>Return the next page of a retrieve multiple query when there are additional pages.</summary>
             /// <param name="query" type="String">The value of the @odata.nextLink property for the results of a queryEntitySet query when there are more pages.</param>
             /// <param name="includeFormattedValues" type="Boolean">Whether you want to have formatted values included in the results</param> 
             /// <param name="maxPageSize" type="Number">A number that limits the number of entities to be retrieved in the query.</param> 
-            /// <param name="successCallback" type="Function">The function to call when the entities are returned. The results of the query will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isStringOrNull(query)) {
@@ -1258,12 +1187,6 @@ var XrmSdk;
             }
             if (!this.isNumberOrNull(maxPageSize)) {
                 throw new Error("XrmSdk.WebAPI.getNextPage maxPageSize parameter must be a number or null.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.getNextPage successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.getNextPage errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.getNextPage callerId parameter must be a string or null.");
@@ -1287,40 +1210,40 @@ var XrmSdk;
                 req.setRequestHeader("Prefer", "odata.maxpagesize=" + maxPageSize);
             }
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback)
-                                successCallback(JSON.parse(this.response, this.dateReviver));
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(JSON.parse(this.response, this.dateReviver));
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 200) {
-                    if (successCallback)
-                        successCallback(JSON.parse(req.response, this.dateReviver));
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.response, _this.dateReviver));
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.getNextPage = getNextPage;
-        function executeBatch(payload, batchId, successCallback, errorCallback, callerId, async) {
+        function executeBatch(payload, batchId, callerId, async) {
+            var _this = this;
             /// <summary>Execute several operations at once</summary>
             /// <param name="payload" type="String">A string describing the operations to perform in the batch</param>  
             /// <param name="batchId" type="String">A string containing the Id used for the batch</param>   
-            /// <param name="successCallback" type="Function">The function to call when the actions are completed. The results of the operation will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="callerId" type="String" optional="true">The systemuserid value of the user to impersonate</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
             if (!this.isString(payload)) {
@@ -1328,12 +1251,6 @@ var XrmSdk;
             }
             if (!this.isString(batchId)) {
                 throw new Error("XrmSdk.WebAPI.executeBatch batchId parameter must be a string.");
-            }
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.executeBatch successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.executeBatch errorCallback parameter must be a function or null.");
             }
             if (!this.isAcceptableCallerId(callerId)) {
                 throw new Error("XrmSdk.WebAPI.executeBatch callerId parameter must be a string or null.");
@@ -1348,47 +1265,39 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback) {
-                                successCallback(this.response);
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(this.response);
+                            }
+                            else {
+                                reject(this.errorHandler(this));
                             }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send(payload);
+                    };
+                    req.send(payload);
+                });
             }
             else {
-                req.send(payload);
-                if (req.status == 200) {
-                    if (successCallback) {
-                        successCallback(req.response);
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send(payload);
+                    if (req.status == 200) {
+                        resolve(req.response);
                     }
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.executeBatch = executeBatch;
-        function getEntityList(successCallback, errorCallback, async) {
+        function getEntityList(async) {
+            var _this = this;
             /// <summary>Retrieve an array of entities available from the service</summary>
-            /// <param name="successCallback" type="Function">The function to call when the results are returned. The results of the operation will be passed to this function.</param>
-            /// <param name="errorCallback" type="Function">The function to call when there is an error. The error will be passed to this function.</param>
             /// <param name="async" type="Boolean">If 'true', the request will be performed asynchronously, otherwise synchronously</param>
-            if (!this.isFunctionOrNull(successCallback)) {
-                throw new Error("XrmSdk.WebAPI.getEntityList successCallback parameter must be a function or null.");
-            }
-            if (!this.isFunctionOrNull(errorCallback)) {
-                throw new Error("XrmSdk.WebAPI.getEntityList errorCallback parameter must be a function or null.");
-            }
             if (!this.isBoolean(async)) {
                 throw new Error("XrmSdk.WebAPI.getEntityList async parameter must be a boolean.");
             }
@@ -1399,31 +1308,32 @@ var XrmSdk;
             req.setRequestHeader("OData-MaxVersion", "4.0");
             req.setRequestHeader("OData-Version", "4.0");
             if (async) {
-                req.onreadystatechange = function () {
-                    if (this.readyState == 4 /* complete */) {
-                        req.onreadystatechange = null;
-                        if (this.status == 200) {
-                            if (successCallback)
-                                successCallback(JSON.parse(this.response).value);
+                return new Promise(function (resolve, reject) {
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4 /* complete */) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                resolve(JSON.parse(this.response).value);
+                            }
+                            else {
+                                reject(this.errorHandler(this));
+                            }
                         }
-                        else {
-                            if (errorCallback)
-                                errorCallback(this.errorHandler(this));
-                        }
-                    }
-                };
-                req.send();
+                    };
+                    req.send();
+                });
             }
             else {
-                req.send();
-                if (req.status == 200) {
-                    if (successCallback)
-                        successCallback(JSON.parse(req.response).value);
-                }
-                else {
-                    if (errorCallback)
-                        errorCallback(this.errorHandler(this));
-                }
+                var deferred = new Promise(function (resolve, reject) {
+                    req.send();
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.response).value);
+                    }
+                    else {
+                        reject(_this.errorHandler(_this));
+                    }
+                });
+                return deferred;
             }
         }
         WebAPI.getEntityList = getEntityList;

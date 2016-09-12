@@ -1359,7 +1359,7 @@ module XrmSdk.WebAPI {
     }
 
     export function getWebAPIPath() {
-        return this.getClientUrl() + "/api/data/v8.0/";
+        return this.getClientUrl() + "/api/data/v8.1/";
     }
 
     export function getId(idLength?) {

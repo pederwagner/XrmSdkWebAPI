@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -23,181 +24,200 @@ namespace XrmSdk.TSEntityClassGenerator
         #region static properties
 
         private static readonly String[] ExcludedEntities =
-            {
-                "ApplicationFile",
-                "AsyncOperation",
-                "AttributeMap",
-                "AuthorizationServer",
-                "BulkDeleteFailure",
-                "BulkDeleteOperation",
-                "BulkOperation",
-                "BulkOperationLog",
-                "BusinessProcessFlowInstance",
-                "BusinessUnitMap",
-                "BusinessUnitNewsArticle",
-                "ChildIncidentCount",
-                "ClientUpdate",
-                "ColumnMapping",
-                "Commitment",
-                "ComplexControl",
-                "ConvertRule",
-                "ConvertRuleItem",
-                "Dependency",
-                "DependencyFeature",
-                "DependencyNode",
-                "DisplayString",
-                "DisplayStringMap",
-                "DocumentIndex",
-                "DuplicateRecord",
-                "DuplicateRule",
-                "DuplicateRuleCondition",
-                "EmailHash",
-                "EmailSearch",
-                "EmailServerProfile",
-                "EntityMap",
-                "ExchangeSyncIdMapping",
-                "FieldPermission",
-                "FieldSecurityProfile",
-                "FilterTemplate",
-                "FixedMonthlyFiscalCalendar",
-                "ImageDescriptor",
-                "Import",
-                "ImportData",
-                "ImportEntityMapping",
-                "ImportFile",
-                "ImportJob",
-                "ImportLog",
-                "ImportMap",
-                "IntegrationStatus",
-                "InternalAddress",
-                "InterProcessLock",
-                "InvalidDependency",
-                "IsvConfig",
-                "License",
-                "LookUpMapping",
-                "Mailbox",
-                "MailboxStatistics",
-                "MetadataDifference",
-                "MultiEntitySearch",
-                "MultiEntitySearchEntities",
-                "Notification",
-                "OrganizationStatistic",
-                "OrganizationUI",
-                "OwnerMapping",
-                "PartnerApplication",
-                "PickListMapping",
-                "PluginAssembly",
-                "PluginType",
-                "PluginTypeStatistic",
-                "PrincipalObjectAccess",
-                "PrincipalObjectAccessReadSnapshot",
-                "PrincipalObjectAttributeAccess",
-                "Privilege",
-                "PrivilegeObjectTypeCodes",
-                "ProcessSession",
-                "ProcessStage",
-                "ProcessTrigger",
-                "Publisher",
-                "PublisherAddress",
-                "RecordCountSnapshot",
-                "RelationshipRole",
-                "RelationshipRoleMap",
-                "ReplicationBacklog",
-                "Report",
-                "ReportCategory",
-                "ReportEntity",
-                "ReportLink",
-                "ReportVisibility",
-                "RibbonCommand",
-                "RibbonContextGroup",
-                "RibbonCustomization",
-                "RibbonDiff",
-                "RibbonRule",
-                "RibbonTabToCommandMap",
-                "RoutingRule",
-                "RoutingRuleItem",
-                "SalesProcessInstance",
-                "SdkMessage",
-                "SdkMessageFilter",
-                "SdkMessagePair",
-                "SdkMessageProcessingStep",
-                "SdkMessageProcessingStepImage",
-                "SdkMessageProcessingStepSecureConfig",
-                "SdkMessageRequest",
-                "SdkMessageRequestField",
-                "SdkMessageResponse",
-                "SdkMessageResponseField",
-                "ServiceEndpoint",
-                "SiteMap",
-                "SLA",
-                "SLAItem",
-                "Solution",
-                "SolutionComponent",
-                "SqlEncryptionAudit",
-                "StatusMap",
-                "StringMap",
-                "Subscription",
-                "SubscriptionClients",
-                "SubscriptionSyncInfo",
-                "SubscriptionTrackingDeletedObject",
-                "SystemApplicationMetadata",
-                "SystemForm",
-                "SystemUserBusinessUnitEntityMap",
-                "SystemUserPrincipals",
-                "TraceAssociation",
-                "TraceLog",
-                "TraceRegarding",
-                "TransformationMapping",
-                "TransformationParameterMapping",
-                "UnresolvedAddress",
-                "UserApplicationMetadata",
-                "UserEntityInstanceData",
-                "UserEntityUISettings",
-                "WebWizard",
-                "WizardAccessPrivilege",
-                "WizardPage",
-                "WorkflowWaitSubscription"
-            };
+        {
+            "ApplicationFile",
+            "AsyncOperation",
+            "AttributeMap",
+            "AuthorizationServer",
+            "BulkDeleteFailure",
+            "BulkDeleteOperation",
+            "BulkOperation",
+            "BulkOperationLog",
+            "BusinessProcessFlowInstance",
+            "BusinessUnitMap",
+            "BusinessUnitNewsArticle",
+            "ChildIncidentCount",
+            "ClientUpdate",
+            "ColumnMapping",
+            "Commitment",
+            "ComplexControl",
+            "ConvertRule",
+            "ConvertRuleItem",
+            "Dependency",
+            "DependencyFeature",
+            "DependencyNode",
+            "DisplayString",
+            "DisplayStringMap",
+            "DocumentIndex",
+            "DuplicateRecord",
+            "DuplicateRule",
+            "DuplicateRuleCondition",
+            "EmailHash",
+            "EmailSearch",
+            "EmailServerProfile",
+            "EntityMap",
+            "ExchangeSyncIdMapping",
+            "FieldPermission",
+            "FieldSecurityProfile",
+            "FilterTemplate",
+            "FixedMonthlyFiscalCalendar",
+            "ImageDescriptor",
+            "Import",
+            "ImportData",
+            "ImportEntityMapping",
+            "ImportFile",
+            "ImportJob",
+            "ImportLog",
+            "ImportMap",
+            "IntegrationStatus",
+            "InternalAddress",
+            "InterProcessLock",
+            "InvalidDependency",
+            "IsvConfig",
+            "License",
+            "LookUpMapping",
+            "Mailbox",
+            "MailboxStatistics",
+            "MetadataDifference",
+            "MultiEntitySearch",
+            "MultiEntitySearchEntities",
+            "Notification",
+            "OrganizationStatistic",
+            "OrganizationUI",
+            "OwnerMapping",
+            "PartnerApplication",
+            "PickListMapping",
+            "PluginAssembly",
+            "PluginType",
+            "PluginTypeStatistic",
+            "PrincipalObjectAccess",
+            "PrincipalObjectAccessReadSnapshot",
+            "PrincipalObjectAttributeAccess",
+            "Privilege",
+            "PrivilegeObjectTypeCodes",
+            "ProcessSession",
+            "ProcessStage",
+            "ProcessTrigger",
+            "Publisher",
+            "PublisherAddress",
+            "RecordCountSnapshot",
+            "RelationshipRole",
+            "RelationshipRoleMap",
+            "ReplicationBacklog",
+            "Report",
+            "ReportCategory",
+            "ReportEntity",
+            "ReportLink",
+            "ReportVisibility",
+            "RibbonCommand",
+            "RibbonContextGroup",
+            "RibbonCustomization",
+            "RibbonDiff",
+            "RibbonRule",
+            "RibbonTabToCommandMap",
+            "RoutingRule",
+            "RoutingRuleItem",
+            "SalesProcessInstance",
+            "SdkMessage",
+            "SdkMessageFilter",
+            "SdkMessagePair",
+            "SdkMessageProcessingStep",
+            "SdkMessageProcessingStepImage",
+            "SdkMessageProcessingStepSecureConfig",
+            "SdkMessageRequest",
+            "SdkMessageRequestField",
+            "SdkMessageResponse",
+            "SdkMessageResponseField",
+            "ServiceEndpoint",
+            "SiteMap",
+            "SLA",
+            "SLAItem",
+            "Solution",
+            "SolutionComponent",
+            "SqlEncryptionAudit",
+            "StatusMap",
+            "StringMap",
+            "Subscription",
+            "SubscriptionClients",
+            "SubscriptionSyncInfo",
+            "SubscriptionTrackingDeletedObject",
+            "SystemApplicationMetadata",
+            "SystemForm",
+            "SystemUserBusinessUnitEntityMap",
+            "SystemUserPrincipals",
+            "TraceAssociation",
+            "TraceLog",
+            "TraceRegarding",
+            "TransformationMapping",
+            "TransformationParameterMapping",
+            "UnresolvedAddress",
+            "UserApplicationMetadata",
+            "UserEntityInstanceData",
+            "UserEntityUISettings",
+            "WebWizard",
+            "WizardAccessPrivilege",
+            "WizardPage",
+            "WorkflowWaitSubscription"
+        };
 
         #endregion
 
         static void Main(string[] args)
         {
-            var _languageCode = 1033;
+            try
+            {
+                var _languageCode = 1033;
 
-            CrmServiceClient connection = new CrmServiceClient(ConfigurationManager.ConnectionStrings["crm"].ConnectionString);
-            var service = (IOrganizationService)connection.OrganizationWebProxyClient ?? (IOrganizationService)connection.OrganizationServiceProxy;
-            var entities = new EntityMetadataCollection();
-            entities = GetEntityMetadata(service);
+                CrmServiceClient connection =
+                    new CrmServiceClient(ConfigurationManager.ConnectionStrings["crm"].ConnectionString);
+                var service = (IOrganizationService)connection.OrganizationWebProxyClient ??
+                              (IOrganizationService)connection.OrganizationServiceProxy;
+                var entities = new EntityMetadataCollection();
+                entities = GetEntityMetadata(service);
 
-            RunAsync(entities);
+                var task = RunAsync(entities);
+                task.Wait();
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("Error in Main(): " + e.Message);
+            }
+            var d = 0;
         }
 
-        private static async void RunAsync(EntityMetadataCollection entities)
+        private static async Task RunAsync(EntityMetadataCollection entities)
         {
-            var webApiClient = new WebApiClient();
-            var webApiMetadata = await webApiClient.GetWebApiMetadata();
-
-            IEdmModel metadataModel;
-            IEnumerable<EdmError> errors;
-            bool parseSuccess = EdmxReader.TryParse(XmlReader.Create(new StringReader(webApiMetadata)), out metadataModel, out errors);
-
-            if (parseSuccess)
+            try
             {
-                var edmSchemaElements = metadataModel.SchemaElements.Where(se =>
-                    se.SchemaElementKind == EdmSchemaElementKind.TypeDefinition &&
-                    ExcludedEntities.All(ee => ee.ToLowerInvariant() != se.Name.ToLowerInvariant()));
+                var webApiClient = new WebApiClient();
+                var webApiMetadata = await webApiClient.GetWebApiMetadata();
 
-                foreach (IEdmSchemaElement schemaElement in edmSchemaElements)
+                IEdmModel metadataModel;
+                IEnumerable<EdmError> errors;
+                bool parseSuccess = EdmxReader.TryParse(XmlReader.Create(new StringReader(webApiMetadata)), out metadataModel, out errors);
+
+                if (parseSuccess)
                 {
-                    var entity = entities.FirstOrDefault(e => e.LogicalName == schemaElement.Name);
-                    if (entity != null)
+                    var edmSchemaElements = metadataModel.SchemaElements.Where(se =>
+                        se.SchemaElementKind == EdmSchemaElementKind.TypeDefinition &&
+                        ExcludedEntities.All(ee => ee.ToLowerInvariant() != se.Name.ToLowerInvariant()));
+
+                    foreach (IEdmSchemaElement schemaElement in edmSchemaElements)
                     {
-                        WriteEntityTsFile(schemaElement as IEdmEntityType, entity);
+                        var entity = entities.FirstOrDefault(e => e.LogicalName == schemaElement.Name);
+                        if (entity != null)
+                        {
+                            WriteEntityTsFile(schemaElement as IEdmEntityType, entity);
+                        }
                     }
                 }
             }
-            Console.WriteLine("Done!");
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("Error in RunAsync(): " + e.Message);
+            }
+            Console.WriteLine("Done! Press any key to close the application");
+            Console.Read();
         }
 
         private static EntityMetadataCollection GetEntityMetadata(IOrganizationService service)
@@ -420,17 +440,18 @@ namespace XrmSdk.TSEntityClassGenerator
                             var relatedType = navProp.Type.FullName();
                             var dependentProp = navProp.ReferentialConstraint.PropertyPairs.First().DependentProperty;
 
-                            if (relatedType.StartsWith("Microsoft.Dynamics.CRM.")) {
+                            if (relatedType.StartsWith("Microsoft.Dynamics.CRM."))
+                            {
                                 relatedType = relatedType.Replace("Microsoft.Dynamics.CRM.", "");
                                 sw.WriteLine("        public set_{0}(id: string) {{", property.Name);
-                                sw.WriteLine("            this[\"{0}@odata.bind\"] = `/{1}s(\"${{id}}\")`;", property.Name, relatedType);
-                                sw.WriteLine("            this[\"{0}\"] = id;", dependentProp.Name);
+                                sw.WriteLine("            this[\"{0}@odata.bind\"] = `/{1}s(${{id}})`;", property.Name, relatedType);
+                                //sw.WriteLine("            this[\"{0}\"] = id;", dependentProp.Name);
                                 sw.WriteLine("        }");
                             }
                         }
                     }
                 }
-                
+
                 sw.WriteLine("");
                 sw.WriteLine("");
 

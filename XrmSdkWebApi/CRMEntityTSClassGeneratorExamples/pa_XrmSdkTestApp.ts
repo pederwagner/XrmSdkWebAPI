@@ -6,8 +6,6 @@
 module XrmServiceToolkitTestApp {
     "use strict";
 
-    import attributeNames = XrmSdk.ContactAttributeNames;
-
     interface IDefaultScope extends ng.IScope {
         vm: DefaultCtrl;
     }
@@ -57,8 +55,8 @@ module XrmServiceToolkitTestApp {
 
             // Example of using generated attributes to create filter for querying CRM
             var options = "$filter="
-                + "startswith(" + attributeNames.FirstName + ", 'TEST_" + this.searchFirstName + "')"
-                + " and startswith(" + attributeNames.LastName + ", 'TEST_" + this.searchLastName + "')";
+                + "startswith(firstname, 'TEST_" + this.searchFirstName + "')"
+                + " and startswith(lastname, 'TEST_" + this.searchLastName + "')";
 
             XrmSdk.WebAPI.queryEntitySet(XrmSdk.Contact.EntityDataSetName, options, false, 1, null, true)
                 .then((data) => {
@@ -107,6 +105,7 @@ module XrmServiceToolkitTestApp {
             var contactUpdate = new XrmSdk.Contact();
             contactUpdate.firstname = "TEST_" + this.firstname;
             contactUpdate.lastname = "TEST_" + this.lastname;
+            contactUpdate.set_parentcustomerid_contact("96A212F0-BBE0-E311-8CB1-D89D67645050"); // Set parent
 
             if (this.maritalstatus != null) {
                 contactUpdate.familystatuscode = this.maritalstatus.value;

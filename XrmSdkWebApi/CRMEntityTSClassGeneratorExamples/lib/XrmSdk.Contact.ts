@@ -7,320 +7,144 @@
 //  Project: https://github.com/pederwagner/XrmSdkWebAPI
 // =========================================================================================
 
-/// <reference path="../../XrmSdk.WebApi/XrmSdk.Interfaces.d.ts" />
 "use strict";
-module XrmSdk.ContactAttributeNames {
-
-    export var AccountId: string = "accountid";
-    export var AccountRoleCode: string = "accountrolecode";
-    export var Address1_AddressId: string = "address1_addressid";
-    export var Address1_AddressTypeCode: string = "address1_addresstypecode";
-    export var Address1_City: string = "address1_city";
-    export var Address1_Composite: string = "address1_composite";
-    export var Address1_Country: string = "address1_country";
-    export var Address1_County: string = "address1_county";
-    export var Address1_Fax: string = "address1_fax";
-    export var Address1_FreightTermsCode: string = "address1_freighttermscode";
-    export var Address1_Latitude: string = "address1_latitude";
-    export var Address1_Line1: string = "address1_line1";
-    export var Address1_Line2: string = "address1_line2";
-    export var Address1_Line3: string = "address1_line3";
-    export var Address1_Longitude: string = "address1_longitude";
-    export var Address1_Name: string = "address1_name";
-    export var Address1_PostalCode: string = "address1_postalcode";
-    export var Address1_PostOfficeBox: string = "address1_postofficebox";
-    export var Address1_PrimaryContactName: string = "address1_primarycontactname";
-    export var Address1_ShippingMethodCode: string = "address1_shippingmethodcode";
-    export var Address1_StateOrProvince: string = "address1_stateorprovince";
-    export var Address1_Telephone1: string = "address1_telephone1";
-    export var Address1_Telephone2: string = "address1_telephone2";
-    export var Address1_Telephone3: string = "address1_telephone3";
-    export var Address1_UPSZone: string = "address1_upszone";
-    export var Address1_UTCOffset: string = "address1_utcoffset";
-    export var Address2_AddressId: string = "address2_addressid";
-    export var Address2_AddressTypeCode: string = "address2_addresstypecode";
-    export var Address2_City: string = "address2_city";
-    export var Address2_Composite: string = "address2_composite";
-    export var Address2_Country: string = "address2_country";
-    export var Address2_County: string = "address2_county";
-    export var Address2_Fax: string = "address2_fax";
-    export var Address2_FreightTermsCode: string = "address2_freighttermscode";
-    export var Address2_Latitude: string = "address2_latitude";
-    export var Address2_Line1: string = "address2_line1";
-    export var Address2_Line2: string = "address2_line2";
-    export var Address2_Line3: string = "address2_line3";
-    export var Address2_Longitude: string = "address2_longitude";
-    export var Address2_Name: string = "address2_name";
-    export var Address2_PostalCode: string = "address2_postalcode";
-    export var Address2_PostOfficeBox: string = "address2_postofficebox";
-    export var Address2_PrimaryContactName: string = "address2_primarycontactname";
-    export var Address2_ShippingMethodCode: string = "address2_shippingmethodcode";
-    export var Address2_StateOrProvince: string = "address2_stateorprovince";
-    export var Address2_Telephone1: string = "address2_telephone1";
-    export var Address2_Telephone2: string = "address2_telephone2";
-    export var Address2_Telephone3: string = "address2_telephone3";
-    export var Address2_UPSZone: string = "address2_upszone";
-    export var Address2_UTCOffset: string = "address2_utcoffset";
-    export var Address3_AddressId: string = "address3_addressid";
-    export var Address3_AddressTypeCode: string = "address3_addresstypecode";
-    export var Address3_City: string = "address3_city";
-    export var Address3_Composite: string = "address3_composite";
-    export var Address3_Country: string = "address3_country";
-    export var Address3_County: string = "address3_county";
-    export var Address3_Fax: string = "address3_fax";
-    export var Address3_FreightTermsCode: string = "address3_freighttermscode";
-    export var Address3_Latitude: string = "address3_latitude";
-    export var Address3_Line1: string = "address3_line1";
-    export var Address3_Line2: string = "address3_line2";
-    export var Address3_Line3: string = "address3_line3";
-    export var Address3_Longitude: string = "address3_longitude";
-    export var Address3_Name: string = "address3_name";
-    export var Address3_PostalCode: string = "address3_postalcode";
-    export var Address3_PostOfficeBox: string = "address3_postofficebox";
-    export var Address3_PrimaryContactName: string = "address3_primarycontactname";
-    export var Address3_ShippingMethodCode: string = "address3_shippingmethodcode";
-    export var Address3_StateOrProvince: string = "address3_stateorprovince";
-    export var Address3_Telephone1: string = "address3_telephone1";
-    export var Address3_Telephone2: string = "address3_telephone2";
-    export var Address3_Telephone3: string = "address3_telephone3";
-    export var Address3_UPSZone: string = "address3_upszone";
-    export var Address3_UTCOffset: string = "address3_utcoffset";
-    export var Aging30: string = "aging30";
-    export var Aging30_Base: string = "aging30_base";
-    export var Aging60: string = "aging60";
-    export var Aging60_Base: string = "aging60_base";
-    export var Aging90: string = "aging90";
-    export var Aging90_Base: string = "aging90_base";
-    export var Anniversary: string = "anniversary";
-    export var AnnualIncome: string = "annualincome";
-    export var AnnualIncome_Base: string = "annualincome_base";
-    export var AssistantName: string = "assistantname";
-    export var AssistantPhone: string = "assistantphone";
-    export var BirthDate: string = "birthdate";
-    export var Business2: string = "business2";
-    export var Callback: string = "callback";
-    export var ChildrensNames: string = "childrensnames";
-    export var Company: string = "company";
-    export var ContactId: string = "contactid";
-    export var CreatedBy: string = "createdby";
-    export var CreatedByExternalParty: string = "createdbyexternalparty";
-    export var CreatedOn: string = "createdon";
-    export var CreatedOnBehalfBy: string = "createdonbehalfby";
-    export var CreditLimit: string = "creditlimit";
-    export var CreditLimit_Base: string = "creditlimit_base";
-    export var CreditOnHold: string = "creditonhold";
-    export var CustomerSizeCode: string = "customersizecode";
-    export var CustomerTypeCode: string = "customertypecode";
-    export var DefaultPriceLevelId: string = "defaultpricelevelid";
-    export var Department: string = "department";
-    export var Description: string = "description";
-    export var DoNotBulkEMail: string = "donotbulkemail";
-    export var DoNotBulkPostalMail: string = "donotbulkpostalmail";
-    export var DoNotEMail: string = "donotemail";
-    export var DoNotFax: string = "donotfax";
-    export var DoNotPhone: string = "donotphone";
-    export var DoNotPostalMail: string = "donotpostalmail";
-    export var DoNotSendMM: string = "donotsendmm";
-    export var EducationCode: string = "educationcode";
-    export var EMailAddress1: string = "emailaddress1";
-    export var EMailAddress2: string = "emailaddress2";
-    export var EMailAddress3: string = "emailaddress3";
-    export var EmployeeId: string = "employeeid";
-    export var EntityImageId: string = "entityimageid";
-    export var ExchangeRate: string = "exchangerate";
-    export var ExternalUserIdentifier: string = "externaluseridentifier";
-    export var FamilyStatusCode: string = "familystatuscode";
-    export var Fax: string = "fax";
-    export var FirstName: string = "firstname";
-    export var FtpSiteUrl: string = "ftpsiteurl";
-    export var FullName: string = "fullname";
-    export var GenderCode: string = "gendercode";
-    export var GovernmentId: string = "governmentid";
-    export var HasChildrenCode: string = "haschildrencode";
-    export var Home2: string = "home2";
-    export var ImportSequenceNumber: string = "importsequencenumber";
-    export var IsBackofficeCustomer: string = "isbackofficecustomer";
-    export var JobTitle: string = "jobtitle";
-    export var LastName: string = "lastname";
-    export var LastUsedInCampaign: string = "lastusedincampaign";
-    export var LeadSourceCode: string = "leadsourcecode";
-    export var ManagerName: string = "managername";
-    export var ManagerPhone: string = "managerphone";
-    export var MasterId: string = "masterid";
-    export var Merged: string = "merged";
-    export var MiddleName: string = "middlename";
-    export var MobilePhone: string = "mobilephone";
-    export var ModifiedBy: string = "modifiedby";
-    export var ModifiedByExternalParty: string = "modifiedbyexternalparty";
-    export var ModifiedOn: string = "modifiedon";
-    export var ModifiedOnBehalfBy: string = "modifiedonbehalfby";
-    export var NickName: string = "nickname";
-    export var NumberOfChildren: string = "numberofchildren";
-    export var OriginatingLeadId: string = "originatingleadid";
-    export var OverriddenCreatedOn: string = "overriddencreatedon";
-    export var OwnerId: string = "ownerid";
-    export var OwningBusinessUnit: string = "owningbusinessunit";
-    export var OwningTeam: string = "owningteam";
-    export var OwningUser: string = "owninguser";
-    export var Pager: string = "pager";
-    export var ParentContactId: string = "parentcontactid";
-    export var ParentCustomerId: string = "parentcustomerid";
-    export var ParticipatesInWorkflow: string = "participatesinworkflow";
-    export var PaymentTermsCode: string = "paymenttermscode";
-    export var PreferredAppointmentDayCode: string = "preferredappointmentdaycode";
-    export var PreferredAppointmentTimeCode: string = "preferredappointmenttimecode";
-    export var PreferredContactMethodCode: string = "preferredcontactmethodcode";
-    export var PreferredEquipmentId: string = "preferredequipmentid";
-    export var PreferredServiceId: string = "preferredserviceid";
-    export var PreferredSystemUserId: string = "preferredsystemuserid";
-    export var ProcessId: string = "processid";
-    export var Salutation: string = "salutation";
-    export var ShippingMethodCode: string = "shippingmethodcode";
-    export var SpousesName: string = "spousesname";
-    export var StageId: string = "stageid";
-    export var StateCode: string = "statecode";
-    export var StatusCode: string = "statuscode";
-    export var Suffix: string = "suffix";
-    export var Telephone1: string = "telephone1";
-    export var Telephone2: string = "telephone2";
-    export var Telephone3: string = "telephone3";
-    export var TerritoryCode: string = "territorycode";
-    export var TimeZoneRuleVersionNumber: string = "timezoneruleversionnumber";
-    export var TransactionCurrencyId: string = "transactioncurrencyid";
-    export var TraversedPath: string = "traversedpath";
-    export var UTCConversionTimeZoneCode: string = "utcconversiontimezonecode";
-    export var VersionNumber: string = "versionnumber";
-    export var WebSiteUrl: string = "websiteurl";
-    export var YomiFirstName: string = "yomifirstname";
-    export var YomiFullName: string = "yomifullname";
-    export var YomiLastName: string = "yomilastname";
-    export var YomiMiddleName: string = "yomimiddlename";
-}
 
 module XrmSdk.ContactOptionSetValues {
 
     export var AccountRoleCodeValues: any = {
-        Beslutningstager: 1,
-        Medarbejder: 2,
-        Person_der_oever_indflydelse: 3
+        Decision_Maker: 1,
+        Employee: 2,
+        Influencer: 3
     }
 
     export var Address1_AddressTypeCodeValues: any = {
-        Faktura_til: 1,
-        Lever_til: 2,
-        Primaer: 3,
-        Andet: 4
+        Bill_To: 1,
+        Ship_To: 2,
+        Primary: 3,
+        Other: 4
     }
 
     export var Address1_FreightTermsCodeValues: any = {
         FOB: 1,
-        Uden_beregning: 2
+        No_Charge: 2
     }
 
     export var Address1_ShippingMethodCodeValues: any = {
-        Luftfragt: 1,
+        Airborne: 1,
         DHL: 2,
         FedEx: 3,
         UPS: 4,
-        Alm_post: 5,
-        Andet: 8
+        Postal_Mail: 5,
+        Full_Load: 6,
+        Will_Call: 7
     }
 
     export var Address2_AddressTypeCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var Address2_FreightTermsCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var Address2_ShippingMethodCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var Address3_AddressTypeCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var Address3_FreightTermsCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var Address3_ShippingMethodCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var CustomerSizeCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var CustomerTypeCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var EducationCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var FamilyStatusCodeValues: any = {
         Single: 1,
-        Gift: 2,
-        Skilt: 3,
-        Enkestand: 4
+        Married: 2,
+        Divorced: 3,
+        Widowed: 4
     }
 
     export var GenderCodeValues: any = {
-        Mand: 1,
-        Kvinde: 2
+        Male: 1,
+        Female: 2
     }
 
     export var HasChildrenCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var LeadSourceCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var PaymentTermsCodeValues: any = {
-        Netto_30_dage: 1,
-        Netto_8_dage: 6,
-        Netto_14_dage: 7,
-        Netto_kontant: 10,
-        Loebende_maaned___14_dage: 11,
-        Loebende_maaned___8_dage: 12
+        Net_30: 1,
+        _2Pct_10_Net_30: 2,
+        Net_45: 3,
+        Net_60: 4
     }
 
     export var PreferredAppointmentDayCodeValues: any = {
-        Soendag: 0,
-        Mandag: 1,
-        Tirsdag: 2,
-        Onsdag: 3,
-        Torsdag: 4,
-        Fredag: 5,
-        Loerdag: 6
+        Sunday: 0,
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6
     }
 
     export var PreferredAppointmentTimeCodeValues: any = {
-        Morgen: 1,
-        Eftermiddag: 2,
-        Aften: 3
+        Morning: 1,
+        Afternoon: 2,
+        Evening: 3
     }
 
     export var PreferredContactMethodCodeValues: any = {
-        Ethvert: 1,
-        E_mail: 2,
-        Telefon: 3,
+        Any: 1,
+        Email: 2,
+        Phone: 3,
         Fax: 4,
-        Post: 5
+        Mail: 5
     }
 
     export var ShippingMethodCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
     }
 
     export var TerritoryCodeValues: any = {
-        Standardvaerdi: 1
+        Default_Value: 1
+    }
+
+    export var pa_CaseAccessLevelValues: any = {
+        Contact: 953830001,
+        Account: 953830002
+    }
+
+    export var pa_DemoEventtrackValues: any = {
+        _1: 500000000,
+        _2: 500000001,
+        _3: 500000002,
+        _4: 500000003,
+        _5: 500000004
     }
 
 }
@@ -333,6 +157,7 @@ module XrmSdk {
         public static get EntityDataSetName(): string { return "contacts"; }
         public static get EntityLogicalName(): string { return "contact"; }
 
+        // Attributes
         _accountid_value: string = undefined;
         accountrolecode: number = undefined;
         address1_addressid: string = undefined;
@@ -421,18 +246,45 @@ module XrmSdk {
         birthdate: Date = undefined;
         business2: string = undefined;
         callback: string = undefined;
+        cdi_age: number = undefined;
+        cdi_allowtextmessages: boolean = undefined;
+        cdi_facebook: string = undefined;
+        cdi_gender: boolean = undefined;
+        cdi_grade: string = undefined;
+        cdi_identifiedon: Date = undefined;
+        cdi_image: string = undefined;
+        cdi_ip: string = undefined;
+        cdi_latitude: string = undefined;
+        cdi_linkedin: string = undefined;
+        cdi_longitude: string = undefined;
+        cdi_partitionkey: string = undefined;
+        cdi_rowkey: string = undefined;
+        cdi_score: number = undefined;
+        cdi_social: string = undefined;
+        cdi_totalscore: number = undefined;
+        cdi_twitter: string = undefined;
+        cdi_visitorkey: string = undefined;
         childrensnames: string = undefined;
         company: string = undefined;
         contactid: string = undefined;
-        _createdby_value: string = undefined;
+        public set_createdby(id: string) {
+            this["createdby@odata.bind"] = `/systemusers(${id})`;
+        }
         _createdbyexternalparty_value: string = undefined;
+        _createdby_value: string = undefined;
         createdon: Date = undefined;
+        public set_createdonbehalfby(id: string) {
+            this["createdonbehalfby@odata.bind"] = `/systemusers(${id})`;
+        }
         _createdonbehalfby_value: string = undefined;
         creditlimit: number = undefined;
         creditlimit_base: number = undefined;
         creditonhold: boolean = undefined;
         customersizecode: number = undefined;
         customertypecode: number = undefined;
+        public set_defaultpricelevelid(id: string) {
+            this["defaultpricelevelid@odata.bind"] = `/pricelevels(${id})`;
+        }
         _defaultpricelevelid_value: string = undefined;
         department: string = undefined;
         description: string = undefined;
@@ -448,7 +300,10 @@ module XrmSdk {
         emailaddress2: string = undefined;
         emailaddress3: string = undefined;
         employeeid: string = undefined;
+        entityimage: string = undefined;
         entityimageid: string = undefined;
+        entityimage_timestamp: number = undefined;
+        entityimage_url: string = undefined;
         exchangerate: number = undefined;
         externaluseridentifier: string = undefined;
         familystatuscode: number = undefined;
@@ -463,51 +318,134 @@ module XrmSdk {
         importsequencenumber: number = undefined;
         isbackofficecustomer: boolean = undefined;
         jobtitle: string = undefined;
+        lasso_id: string = undefined;
         lastname: string = undefined;
+        lastonholdtime: Date = undefined;
         lastusedincampaign: Date = undefined;
         leadsourcecode: number = undefined;
         managername: string = undefined;
         managerphone: string = undefined;
+        public set_masterid(id: string) {
+            this["masterid@odata.bind"] = `/contacts(${id})`;
+        }
         _masterid_value: string = undefined;
         merged: boolean = undefined;
         middlename: string = undefined;
         mobilephone: string = undefined;
-        _modifiedby_value: string = undefined;
+        public set_modifiedby(id: string) {
+            this["modifiedby@odata.bind"] = `/systemusers(${id})`;
+        }
         _modifiedbyexternalparty_value: string = undefined;
+        _modifiedby_value: string = undefined;
         modifiedon: Date = undefined;
+        public set_modifiedonbehalfby(id: string) {
+            this["modifiedonbehalfby@odata.bind"] = `/systemusers(${id})`;
+        }
         _modifiedonbehalfby_value: string = undefined;
+        msdyncrm_microsoftdynamicsmarketingpublishtag: string = undefined;
         nickname: string = undefined;
         numberofchildren: number = undefined;
+        onholdtime: number = undefined;
+        public set_originatingleadid(id: string) {
+            this["originatingleadid@odata.bind"] = `/leads(${id})`;
+        }
         _originatingleadid_value: string = undefined;
         overriddencreatedon: Date = undefined;
+        public set_ownerid(id: string) {
+            this["ownerid@odata.bind"] = `/principals(${id})`;
+        }
         _ownerid_value: string = undefined;
+        public set_owningbusinessunit(id: string) {
+            this["owningbusinessunit@odata.bind"] = `/businessunits(${id})`;
+        }
         _owningbusinessunit_value: string = undefined;
+        public set_owningteam(id: string) {
+            this["owningteam@odata.bind"] = `/teams(${id})`;
+        }
         _owningteam_value: string = undefined;
+        public set_owninguser(id: string) {
+            this["owninguser@odata.bind"] = `/systemusers(${id})`;
+        }
         _owninguser_value: string = undefined;
+        pa_accountnamefromsignup: string = undefined;
+        pa_caseaccesslevel: number = undefined;
+        pa_democompanyname: string = undefined;
+        pa_demoemail: string = undefined;
+        pa_demoeventcode: string = undefined;
+        pa_demoeventtrack: number = undefined;
+        pa_demofirstname: string = undefined;
+        pa_demofood: string = undefined;
+        pa_demolastname: string = undefined;
+        pa_demopersonalmeeting: boolean = undefined;
+        pa_eventaddress: string = undefined;
+        pa_eventcity: string = undefined;
+        pa_eventend: Date = undefined;
+        pa_eventlocation: string = undefined;
+        pa_eventname: string = undefined;
+        pa_eventstart: Date = undefined;
+        pa_eventzippostalcode: string = undefined;
+        pa_formid: string = undefined;
         pager: string = undefined;
+        pa_isallowedcasecreation: boolean = undefined;
+        pa_mossusername: string = undefined;
+        pa_newsletter: boolean = undefined;
         _parentcontactid_value: string = undefined;
+        public set_parentcustomerid_account(id: string) {
+            this["parentcustomerid_account@odata.bind"] = `/accounts(${id})`;
+        }
+        public set_parentcustomerid_contact(id: string) {
+            this["parentcustomerid_contact@odata.bind"] = `/contacts(${id})`;
+        }
         _parentcustomerid_value: string = undefined;
         participatesinworkflow: boolean = undefined;
+        pa_testmetadata: string = undefined;
+        pa_webformaccount: string = undefined;
+        pa_webformfirstname: string = undefined;
+        pa_webformlastname: string = undefined;
+        pa_webformmessage: string = undefined;
+        pa_webformtelephone: string = undefined;
+        pa_welcomemailsend: boolean = undefined;
         paymenttermscode: number = undefined;
         preferredappointmentdaycode: number = undefined;
         preferredappointmenttimecode: number = undefined;
         preferredcontactmethodcode: number = undefined;
+        public set_preferredequipmentid(id: string) {
+            this["preferredequipmentid@odata.bind"] = `/equipments(${id})`;
+        }
         _preferredequipmentid_value: string = undefined;
+        public set_preferredserviceid(id: string) {
+            this["preferredserviceid@odata.bind"] = `/services(${id})`;
+        }
         _preferredserviceid_value: string = undefined;
+        public set_preferredsystemuserid(id: string) {
+            this["preferredsystemuserid@odata.bind"] = `/systemusers(${id})`;
+        }
         _preferredsystemuserid_value: string = undefined;
         processid: string = undefined;
         salutation: string = undefined;
         shippingmethodcode: number = undefined;
+        public set_sla_contact_sla(id: string) {
+            this["sla_contact_sla@odata.bind"] = `/slas(${id})`;
+        }
+        _slaid_value: string = undefined;
+        public set_slainvokedid_contact_sla(id: string) {
+            this["slainvokedid_contact_sla@odata.bind"] = `/slas(${id})`;
+        }
+        _slainvokedid_value: string = undefined;
         spousesname: string = undefined;
         stageid: string = undefined;
         statecode: number = undefined;
         statuscode: number = undefined;
+        subscriptionid: string = undefined;
         suffix: string = undefined;
         telephone1: string = undefined;
         telephone2: string = undefined;
         telephone3: string = undefined;
         territorycode: number = undefined;
         timezoneruleversionnumber: number = undefined;
+        public set_transactioncurrencyid(id: string) {
+            this["transactioncurrencyid@odata.bind"] = `/transactioncurrencys(${id})`;
+        }
         _transactioncurrencyid_value: string = undefined;
         traversedpath: string = undefined;
         utcconversiontimezonecode: number = undefined;
@@ -517,6 +455,7 @@ module XrmSdk {
         yomifullname: string = undefined;
         yomilastname: string = undefined;
         yomimiddlename: string = undefined;
+
 
         public static castFromEntity(entity: Entity): Contact {
             var sdkEntity = new Contact();

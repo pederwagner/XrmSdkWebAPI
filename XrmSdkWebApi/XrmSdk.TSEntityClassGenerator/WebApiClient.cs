@@ -15,35 +15,21 @@ using Configuration = Microsoft.Crm.Sdk.Samples.HelperCode.Configuration;
 
 namespace XrmSdk.TSEntityClassGenerator
 {
+    /// <summary>
+    /// NB: To connect to CRMs WebAPI, you will need to authenticate using OAuth / ADAL.
+    /// If you are using a CRM Online instance, or have IFD set up, you might need to register the application in Azure AD, to get a valid Client ID
+    /// Follow the instructions here http://www.inogic.com/blog/2016/03/programming-using-webapi-through-c-in-dynamics-crm-2016/
+    /// Set the redirect URL used and the client ID in the app settings of the app.config file
+    /// 
+    /// If you are unable to register the application in Azure AD, you can alternatively manually download the metadata file from CRM Developer Resources,
+    /// and overwrite the file ODataV4Metadata.xml that is part of this solution
+    /// </summary>
     public class WebApiClient
     {
         private HttpClient httpClient; //Client to CRM server communication
 
-        public string OrgUri { get; set; }
-
-        public string AuthenticationProviderType { get; set; }
-
-        public string Authority { get; set; }
-
-        public string Version { get; set; }
-
-        public string DomainName { get; set; }
-
-        public string UserName { get; set; }
-
-        public System.Security.SecureString Password { get; set; }
-
-        public string FriendlyName { get; set; }
-
-        public string ClientId { get; set; }
-
-        public string AuthToken { get; set; }
-
-        public string RedirectUrl { get; set; }
-
         public WebApiClient()
         {
-            // http://www.inogic.com/blog/2016/03/programming-using-webapi-through-c-in-dynamics-crm-2016/
             ConnectToCRM(new[] {"crm"});
         }
 
@@ -51,16 +37,13 @@ namespace XrmSdk.TSEntityClassGenerator
         {
             try
             {
-                HttpRequestMessage request;
-                HttpResponseMessage response;
-
                 var metadataUri = "$metadata";
 
                 //Request formatted values be returned (in addition to standard unformatted values).
-                response = await SendCrmRequestAsync(HttpMethod.Get, metadataUri, false);
+                var response = await SendCrmRequestAsync(HttpMethod.Get, metadataUri, false);
                 if (response.StatusCode == HttpStatusCode.OK) //200
                 {
-                    return response.Content.ToString();
+                    return await response.Content.ReadAsStringAsync();
                 }
                 else
                 {
@@ -94,16 +77,8 @@ namespace XrmSdk.TSEntityClassGenerator
             else
                 config = new FileConfiguration(null);
 
-            ClientId = config.ClientId;
-            DomainName = config.Domain;
-            OrgUri = config.ServiceUrl;
-            UserName = config.Username;
-            Password = config.Password;
-            RedirectUrl = config.RedirectUrl;
-
             //Create a helper object to authenticate the user with this connection info.
             Authentication auth = new Authentication(config);
-
 
             //Next use a HttpClient object to connect to specified CRM Web service.
             httpClient = new HttpClient(auth.ClientHandler, true);
@@ -114,7 +89,7 @@ namespace XrmSdk.TSEntityClassGenerator
             httpClient.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
             httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");
             httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+                new MediaTypeWithQualityHeaderValue("application/xml"));
         }
 
         ///<summary> Sends an HTTP request to the current CRM service. </summary>
